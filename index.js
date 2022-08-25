@@ -19,6 +19,7 @@ async function run() {
     try {
         const database = client.db("yokooBicycle");
         const bicyclesCollection = database.collection("bicycles");
+        const bokkingsCollection = database.collection("bookings");
 
         // send bicycle to database
         app.post('/bicycle', async (req, res) => {
@@ -44,8 +45,14 @@ async function run() {
         app.get('/bicycles/:id', async (req, res) => {
             const id = req.params.id;
             const bicycle = await bicyclesCollection.findOne({ _id: new ObjectId(id) });
-            console.log(bicycle);
             res.json(bicycle);
+        })
+
+        // book a bicycle
+        app.post('/booking', async (req, res) => {
+            const book = req.body;
+            const result = await bokkingsCollection.insertOne(book);
+            res.send(result);
         })
 
     } finally {
