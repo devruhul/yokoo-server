@@ -1,6 +1,7 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express = require('express');
 const app = express();
+const objectId = require('mongodb').ObjectId;
 require('dotenv').config();
 const cors = require('cors');
 const port = process.env.PORT || 5000;
@@ -26,17 +27,25 @@ async function run() {
             res.send(result);
         });
 
-        // get bicycles from database
+        // get all bicycles from database
         app.get('/bicycles', async (req, res) => {
             const bicycles = await bicyclesCollection.find({}).toArray();
             res.send(bicycles);
         })
 
         // delete bicycle from database
-        app.delete('/bicycle/:id', async (req, res) => {
-            const { id } = req.params;
+        app.delete('/bicycles/:id', async (req, res) => {
+            const id = req.params;
             const result = await bicyclesCollection.deleteOne({ _id: id });
             res.send(result);
+        })
+
+        // get a bicycle from database
+        app.get('/bicycles/:id', async (req, res) => {
+            const id = req.params.id;
+            const bicycle = await bicyclesCollection.findOne({ _id: new ObjectId(id) });
+            console.log(bicycle);
+            res.json(bicycle);
         })
 
     } finally {
