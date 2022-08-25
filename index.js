@@ -26,6 +26,11 @@ async function run() {
             res.send(result);
         });
 
+        // get bicycles from database
+        app.get('/bicycles', async (req, res) => {
+            const bicycles = await bicyclesCollection.find({}).toArray();
+            res.send(bicycles);
+        })
 
     } finally {
         //   await client.close();
