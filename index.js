@@ -32,6 +32,13 @@ async function run() {
             res.send(bicycles);
         })
 
+        // delete bicycle from database
+        app.delete('/bicycle/:id', async (req, res) => {
+            const { id } = req.params;
+            const result = await bicyclesCollection.deleteOne({ _id: id });
+            res.send(result);
+        })
+
     } finally {
         //   await client.close();
     }
