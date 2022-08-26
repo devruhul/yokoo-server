@@ -78,6 +78,13 @@ async function run() {
             res.send(result);
         })
 
+        // send review to database
+        app.post('/review', async (req, res) => {
+            const review = req.body;
+            const result = await usersCollection.insertOne(review);
+            res.send(review);
+        })
+
 
     } finally {
         //   await client.close();
