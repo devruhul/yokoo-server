@@ -63,25 +63,24 @@ async function run() {
             res.send(bicycles);
         })
 
+        // get a bicycle from database
+        app.get('/bicycles/:id', async (req, res) => {
+            const id = req.params.id;
+            const bicycle = await bicyclesCollection.findOne({ _id: new ObjectId(id) });
+            res.send(bicycle);
+        })
+
         // get all bicycles from database
         app.get('/allBicycles', async (req, res) => {
             const bicycles = await bicyclesCollection.find({}).toArray();
             res.send(bicycles);
         })
 
-
         // delete bicycle from database
         app.delete('/bicycles/:id', async (req, res) => {
             const deleteBicycleId = req.params;
             const result = await bicyclesCollection.deleteOne({ _id: new ObjectId(deleteBicycleId) });
             res.send(result);
-        })
-
-        // get a bicycle from database
-        app.get('/bicycles/:id', async (req, res) => {
-            const id = req.params.id;
-            const bicycle = await bicyclesCollection.findOne({ _id: new ObjectId(id) });
-            res.send(bicycle);
         })
 
         // book a bicycle
@@ -91,12 +90,34 @@ async function run() {
             res.send(result);
         })
 
+        // get all bookings from database
+        app.get('/allBookings', async (req, res) => {
+            const bookings = await bookingsCollection.find({}).toArray();
+            res.send(bookings);
+        })
+
         // get current user order by email
         app.get('/booking/:email', async (req, res) => {
             const email = req.params.email;
             const booking = await bookingsCollection.find({ userEmail: email }).toArray();
             res.send(booking);
         })
+
+        // delete a booking from database
+        app.delete('/booking/:id', async (req, res) => {
+            const deleteBookingId = req.params.id;
+            const result = await bookingsCollection.deleteOne({ _id: new ObjectId(deleteBookingId) });
+            res.send(result);
+        })
+
+        // update order status in bookings collection
+        app.put('/bookings/:id', async (req, res) => {
+            const id = req.params.id;
+            const status = req.body;
+            console.log(status);
+            const result = await bookingsCollection.updateOne({ _id: new ObjectId(id) }, { $set: { orderStatus: status } });
+            res.send(result);
+        });
 
         // save users to database
         app.post('/users', async (req, res) => {
