@@ -20,6 +20,7 @@ async function run() {
         const database = client.db("yokooBicycle");
         const bicyclesCollection = database.collection("bicycles");
         const bookingsCollection = database.collection("bookings");
+        const usersCollection = database.collection("users");
 
         // send bicycle to database
         app.post('/bicycle', async (req, res) => {
@@ -60,7 +61,22 @@ async function run() {
             const email = req.params.email;
             const booking = await bookingsCollection.find({ userEmail: email }).toArray();
             res.send(booking);
-        } )
+        })
+
+        // save users to database
+        app.post('/users', async (req, res) => {
+            const user = req.body;
+            const result = await usersCollection.insertOne(user);
+            res.send(result);
+        });
+
+        // uodate user if not existed
+        app.put('/users', async (req, res) => {
+            const user = req.body;
+            const query = { userEmail: user.email };
+            const result = await usersCollection.updateOne(query, { $set: user }, { upsert: true });
+            res.send(result);
+        })
 
 
     } finally {
