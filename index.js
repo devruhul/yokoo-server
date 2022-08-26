@@ -45,7 +45,7 @@ async function run() {
         app.get('/bicycles/:id', async (req, res) => {
             const id = req.params.id;
             const bicycle = await bicyclesCollection.findOne({ _id: new ObjectId(id) });
-            res.json(bicycle);
+            res.send(bicycle);
         })
 
         // book a bicycle
@@ -59,7 +59,7 @@ async function run() {
         app.get('/booking/:email', async (req, res) => {
             const email = req.params.email;
             const booking = await bookingsCollection.find({ userEmail: email }).toArray();
-            res.json(booking);
+            res.send(booking);
         } )
 
 
