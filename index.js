@@ -21,6 +21,8 @@ async function run() {
         const bicyclesCollection = database.collection("bicycles");
         const bookingsCollection = database.collection("bookings");
         const usersCollection = database.collection("users");
+        const contactsCollection = database.collection("contacts");
+        const reviewsCollection = database.collection("reviews");
 
         // send bicycle to database
         app.post('/bicycle', async (req, res) => {
@@ -81,8 +83,15 @@ async function run() {
         // send review to database
         app.post('/review', async (req, res) => {
             const review = req.body;
-            const result = await usersCollection.insertOne(review);
-            res.send(review);
+            const result = await reviewsCollection.insertOne(review);
+            res.send(result);
+        })
+
+        // send contacts to database
+        app.post('/contact', async (req, res) => {
+            const review = req.body;
+            const result = await contactsCollection.insertOne(review);
+            res.send(result);
         })
 
 
