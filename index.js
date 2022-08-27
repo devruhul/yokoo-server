@@ -7,7 +7,7 @@ require('dotenv').config();
 const cors = require('cors');
 const port = process.env.PORT || 5000;
 
-// middleware
+// middlewares
 app.use(cors());
 app.use(express.json());
 
@@ -21,6 +21,7 @@ admin.initializeApp({
     databaseURL: process.env.FIREBASE_DATABASE_URL
 });
 
+// mongodb uri
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.6jlv6.mongodb.net/?retryWrites=true&w=majority`;
 
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
@@ -114,7 +115,6 @@ async function run() {
         app.put('/bookings/:id', async (req, res) => {
             const id = req.params.id;
             const status = req.body;
-            console.log(status);
             const result = await bookingsCollection.updateOne({ _id: new ObjectId(id) }, { $set: { orderStatus: status } });
             res.send(result);
         });
@@ -129,7 +129,7 @@ async function run() {
         // uodate user if not existed
         app.put('/users', async (req, res) => {
             const user = req.body;
-            const query = { userEmail: user.email };
+            const query = { email: user.email };
             const result = await usersCollection.updateOne(query, { $set: user }, { upsert: true });
             res.send(result);
         })
@@ -137,7 +137,7 @@ async function run() {
         // check if user roll is admin or not
         app.get('/users/:email', async (req, res) => {
             const email = req.params.email;
-            const query = { userEmail: email };
+            const query = { email: email };
             const user = await usersCollection.findOne(query);
             let isAdmin = false;
             if (user?.role === 'admin') {
@@ -151,9 +151,9 @@ async function run() {
             const user = req.body;
             const requester = req.decodedEmail;
             if (requester) {
-                const requesterAccount = await usersCollection.findOne({ userEmail: requester });
+                const requesterAccount = await usersCollection.findOne({ email: requester });
                 if (requesterAccount.role === 'admin') {
-                    const filter = { userEmail: user.email };
+                    const filter = { email: user.email };
                     const updateDoc = { $set: { role: 'admin' } };
                     const result = await usersCollection.updateOne(filter, updateDoc);
                     res.json(result);
@@ -171,13 +171,18 @@ async function run() {
             res.send(result);
         })
 
+        // get all reviews from database
+        app.get('/allReviews', async (req, res) => {
+            const reviews = await reviewsCollection.find({}).toArray();
+            res.send(reviews)
+        })
+
         // send contacts to database
         app.post('/contact', async (req, res) => {
             const review = req.body;
             const result = await contactsCollection.insertOne(review);
             res.send(result);
         })
-
 
     } finally {
         //   await client.close();
