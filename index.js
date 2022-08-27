@@ -195,6 +195,7 @@ app.get('/', (req, res) => {
     res.send('Hello World!');
 })
 
+// listen to port
 app.listen(port, () => {
     console.log(`Yokoo server listening at ${port}`);
 })
