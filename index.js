@@ -192,7 +192,7 @@ run().catch(console.dir);
 
 // create root api
 app.get('/', (req, res) => {
-    res.send('Hello World!');
+    res.send('Yokoo Bicycle');
 })
 
 // listen to port
